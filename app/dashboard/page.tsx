@@ -2,7 +2,7 @@
 
 import { useEffect, useState } from "react"
 import { getCurrentUser, logout, type User as AuthUser } from "@/lib/auth"
-import { redirect } from "next/navigation"
+import { useRouter } from "next/navigation"
 import UserDashboard from "@/components/user-dashboard"
 import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
@@ -32,6 +32,7 @@ import Logo from "@/components/logo"
 export default function DashboardPage() {
   const [user, setUser] = useState<AuthUser | null>(null)
   const [loading, setLoading] = useState(true)
+  const router = useRouter()
   const [activeProducts] = useState([
     {
       id: 1,
@@ -79,14 +80,14 @@ export default function DashboardPage() {
     async function checkAuth() {
       const currentUser = await getCurrentUser()
       if (!currentUser) {
-        redirect("/login")
+        router.push("/login")
       } else {
         setUser(currentUser)
       }
       setLoading(false)
     }
     checkAuth()
-  }, [])
+  }, [router])
 
   if (loading) {
     return (

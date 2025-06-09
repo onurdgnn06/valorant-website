@@ -2,7 +2,7 @@
 
 import { useEffect, useState } from "react"
 import { getCurrentUser, logout, type User } from "@/lib/auth"
-import { redirect } from "next/navigation"
+import { useRouter } from "next/navigation"
 import AdminDashboard from "@/components/admin-dashboard"
 import MobileNav from "@/components/mobile-nav" // MobileNav import'u ekle
 import { Button } from "@/components/ui/button"
@@ -12,21 +12,22 @@ import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigge
 export default function AdminPage() {
   const [user, setUser] = useState<User | null>(null)
   const [loading, setLoading] = useState(true)
+  const router = useRouter()
 
   useEffect(() => {
     async function checkAuth() {
       const currentUser = await getCurrentUser()
       if (!currentUser) {
-        redirect("/login")
+        router.push("/login")
       } else if (currentUser.role !== "admin") {
-        redirect("/dashboard")
+        router.push("/dashboard")
       } else {
         setUser(currentUser)
       }
       setLoading(false)
     }
     checkAuth()
-  }, [])
+  }, [router])
 
   const handleLogout = async () => {
     await logout()

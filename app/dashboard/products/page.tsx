@@ -2,7 +2,7 @@
 
 import { useEffect, useState } from "react"
 import { getCurrentUser, type User } from "@/lib/auth"
-import { redirect } from "next/navigation"
+import { useRouter } from "next/navigation"
 import Link from "next/link"
 import {
   Home,
@@ -28,6 +28,7 @@ import { logout } from "@/lib/auth"
 export default function UserProductsPage() {
   const [user, setUser] = useState<User | null>(null)
   const [loading, setLoading] = useState(true)
+  const router = useRouter()
 
   const [activeProducts] = useState([
     {
@@ -66,14 +67,14 @@ export default function UserProductsPage() {
     async function checkAuth() {
       const currentUser = await getCurrentUser()
       if (!currentUser) {
-        redirect("/login")
+        router.push("/login")
       } else {
         setUser(currentUser)
       }
       setLoading(false)
     }
     checkAuth()
-  }, [])
+  }, [router])
 
   async function handleLogout() {
     await logout()

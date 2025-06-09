@@ -2,7 +2,7 @@
 
 import { useEffect, useState } from "react"
 import { getCurrentUser, type User } from "@/lib/auth"
-import { redirect } from "next/navigation"
+import { useRouter } from "next/navigation"
 import Link from "next/link"
 import { usePathname } from "next/navigation"
 import {
@@ -44,14 +44,15 @@ export default function AdminSettingsPage() {
     message: "",
   })
   const pathname = usePathname()
+  const router = useRouter()
 
   useEffect(() => {
     async function checkAuth() {
       const currentUser = await getCurrentUser()
       if (!currentUser) {
-        redirect("/login")
+        router.push("/login")
       } else if (currentUser.role !== "admin") {
-        redirect("/dashboard")
+        router.push("/dashboard")
       } else {
         setUser(currentUser)
       }
@@ -59,7 +60,7 @@ export default function AdminSettingsPage() {
     }
     checkAuth()
     initializeTheme()
-  }, [])
+  }, [router])
 
   async function handleLogout() {
     await logout()

@@ -2,7 +2,7 @@
 
 import { useEffect, useState } from "react"
 import { getCurrentUser, type User } from "@/lib/auth"
-import { redirect } from "next/navigation"
+import { useRouter } from "next/navigation"
 import Link from "next/link"
 import {
   Home,
@@ -32,6 +32,7 @@ import { logout } from "@/lib/auth"
 export default function AdminProductsPage() {
   const [user, setUser] = useState<User | null>(null)
   const [loading, setLoading] = useState(true)
+  const router = useRouter()
 
   const [products] = useState([
     { id: 1, name: "ESP Paketi", price: 299, stock: 45, sold: 234, status: "active" },
@@ -46,16 +47,16 @@ export default function AdminProductsPage() {
     async function checkAuth() {
       const currentUser = await getCurrentUser()
       if (!currentUser) {
-        redirect("/login")
+        router.push("/login")
       } else if (currentUser.role !== "admin") {
-        redirect("/dashboard")
+        router.push("/dashboard")
       } else {
         setUser(currentUser)
       }
       setLoading(false)
     }
     checkAuth()
-  }, [])
+  }, [router])
 
   async function handleLogout() {
     await logout()

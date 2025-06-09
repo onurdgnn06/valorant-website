@@ -2,7 +2,7 @@
 
 import { useEffect, useState } from "react"
 import { getCurrentUser, type User } from "@/lib/auth"
-import { redirect } from "next/navigation"
+import { useRouter } from "next/navigation"
 import Link from "next/link"
 import {
   Home,
@@ -32,19 +32,20 @@ export default function UserSettingsPage() {
   const [loading, setLoading] = useState(true)
   const [showCurrentPassword, setShowCurrentPassword] = useState(false)
   const [showNewPassword, setShowNewPassword] = useState(false)
+  const router = useRouter()
 
   useEffect(() => {
     async function checkAuth() {
       const currentUser = await getCurrentUser()
       if (!currentUser) {
-        redirect("/login")
+        router.push("/login")
       } else {
         setUser(currentUser)
       }
       setLoading(false)
     }
     checkAuth()
-  }, [])
+  }, [router])
 
   async function handleLogout() {
     await logout()
